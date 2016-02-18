@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Products.qml</file>
+        <file>main.cpp</file>
+        <file>mainButtons.qml</file>
+        <file>about.qml</file>
+        <file>Clients.qml</file>
+    </qresource>
+    <qresource prefix="/modules/">
+        <file>modules/ImageDialog.qml</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file>images/add_48x48.png</file>
+        <file>images/delete_48x48.png</file>
+        <file>images/save_48x48.png</file>
+        <file>images/search_48x48.png</file>
+        <file>images/settings_48x48.png</file>
+        <file>images/pencil_64x64.png</file>
+    </qresource>
+</RCC>
