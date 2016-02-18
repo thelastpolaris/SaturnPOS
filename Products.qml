@@ -343,7 +343,6 @@ Item {
                 }
 
                 ImageDialog {
-
                     Layout.preferredHeight: parent.height
                     Layout.preferredWidth: parent.height
 

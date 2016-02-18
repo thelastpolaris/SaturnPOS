@@ -16,6 +16,8 @@
         <file>images/save_48x48.png</file>
         <file>images/search_48x48.png</file>
         <file>images/settings_48x48.png</file>
+        <file>images/edit_48x48.png</file>
+        <file>images/upload_48x48.png</file>
         <file>images/pencil_64x64.png</file>
     </qresource>
 </RCC>

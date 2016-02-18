@@ -2,6 +2,7 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.1
 import QtQuick.Controls.Styles 1.4
+import "modules/modules"
 
 Item {
     id: clients
@@ -165,12 +166,13 @@ Item {
                         }
                     }
 
-                    Image {
-                        fillMode: Image.PreserveAspectFit
+                    ImageDialog {
                         Layout.preferredHeight: parent.height * 0.6
                         Layout.preferredWidth: parent.height * 0.6
+                        imageWidth: Layout.preferredWidth
+                        imageHeight: Layout.preferredHeight
 
-                        source: "file:/home/polaris/dev/Salko/Products/Photoshoped/chornyi_pidzhak_s_bantom_i_uzorom_pered.png"
+                        imageSrc: "file:/home/polaris/dev/Salko/Products/Photoshoped/chornyi_pidzhak_s_bantom_i_uzorom_pered.png"
                     }
                 }
             }
