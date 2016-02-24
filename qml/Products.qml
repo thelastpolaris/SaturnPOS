@@ -2,7 +2,7 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.1
 import QtQuick.Controls.Styles 1.4
-import "modules/modules"
+import "modules"
 
 Item {
     id: products
@@ -65,7 +65,7 @@ Item {
                 // Layout.preferredHeight: 32
                 //Layout.preferredWidth: 32
 
-                iconSource: "qrc:/images/images/add_48x48.png"
+                iconSource: "/images/images/add_48x48.png"
                 text: qsTr("Добавить товар")
             }
 
@@ -74,7 +74,7 @@ Item {
                 //Layout.preferredHeight: 32
                 //Layout.preferredWidth: 32
 
-                iconSource: "qrc:/images/images/add_48x48.png"
+                iconSource: "/images/images/add_48x48.png"
                 text: qsTr("Добавить подпродукт")
             }
         }
@@ -98,7 +98,7 @@ Item {
                     top: parent.top
                     left: parent.left
                     right: parent.horizontalCenter
-                    leftMargin: 10
+                    //leftMargin: 10
                     rightMargin: 5
                 }
 
@@ -154,7 +154,7 @@ Item {
                         Label {
                             text: qsTr("Дата поступл.")
                         }
-                        TextField { }
+                        DatePicker { topParent: products }
                     }
                 }
             }
@@ -243,7 +243,7 @@ Item {
                             Label {
                                 text: qsTr("Дата поступл.")
                             }
-                            TextField { }
+                            DatePicker { topParent: products }
                         }
                     }
                 }
@@ -393,15 +393,17 @@ Item {
                 }
 
                 Column {
+                    z: 10
                     Label {
                         text: qsTr("Дата поступл.")
                     }
-                    TextField { }
+                    DatePicker { topParent: products }
                 }
             }
         }
 
         GroupBox {
+            z: 1
             id: addAttributesGroupBox
             title: qsTr("Пользовательские атрибуты")
             Layout.fillWidth: true
@@ -485,7 +487,7 @@ Item {
                         Label {
                             text: qsTr("Дата поступл.")
                         }
-                        TextField { }
+                        DatePicker { topParent: products }
                     }
                 }
             }
@@ -537,14 +539,14 @@ Item {
             Button {
                 id: saveButton
                 Layout.preferredHeight: 32
-                iconSource: "qrc:/images/images/save_48x48.png"
+                iconSource: "/images/images/save_48x48.png"
                 text: qsTr("Сохранить")
             }
 
             Button {
                 id: cancelButton
                 Layout.preferredHeight: 32
-                iconSource: "qrc:/images/images/save_48x48.png"
+                iconSource: "/images/images/save_48x48.png"
                 anchors.right: parent.right
                 text: qsTr("Отмена")
             }

@@ -1,14 +1,14 @@
 <RCC>
-    <qresource prefix="/">
-        <file>main.qml</file>
-        <file>Products.qml</file>
-        <file>main.cpp</file>
-        <file>mainButtons.qml</file>
-        <file>about.qml</file>
-        <file>Clients.qml</file>
+    <qresource prefix="qml">
+        <file alias="main.qml">qml/main.qml</file>
+        <file alias="Products.qml">qml/Products.qml</file>
+        <file alias="MainButtons.qml">qml/MainButtons.qml</file>
+        <file alias="About.qml">qml/About.qml</file>
+        <file alias="Clients.qml">qml/Clients.qml</file>
     </qresource>
-    <qresource prefix="/modules/">
-        <file>modules/ImageDialog.qml</file>
+    <qresource prefix="qml/modules">
+        <file alias="ImageDialog.qml">qml/modules/ImageDialog.qml</file>
+        <file alias="DatePicker.qml">qml/modules/DatePicker.qml</file>
     </qresource>
     <qresource prefix="/images">
         <file>images/add_48x48.png</file>
@@ -19,5 +19,8 @@
         <file>images/edit_48x48.png</file>
         <file>images/upload_48x48.png</file>
         <file>images/pencil_64x64.png</file>
+    </qresource>
+    <qresource prefix="/images/modules">
+        <file alias="noimage_128x128.png">images/modules/noimage_128x128.png</file>
     </qresource>
 </RCC>

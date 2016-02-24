@@ -2,7 +2,7 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.1
 import QtQuick.Controls.Styles 1.4
-import "modules/modules"
+import "modules"
 
 Item {
     id: clients
@@ -172,7 +172,7 @@ Item {
                         imageWidth: Layout.preferredWidth
                         imageHeight: Layout.preferredHeight
 
-                        imageSrc: "file:/home/polaris/dev/Salko/Products/Photoshoped/chornyi_pidzhak_s_bantom_i_uzorom_pered.png"
+                        //imageSrc: "file:/home/polaris/dev/Salko/Products/Photoshoped/chornyi_pidzhak_s_bantom_i_uzorom_pered.png"
                     }
                 }
             }

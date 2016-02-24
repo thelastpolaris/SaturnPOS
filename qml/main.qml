@@ -1,5 +1,6 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
+import "modules"
 
 ApplicationWindow {
     id: window
@@ -25,7 +26,7 @@ ApplicationWindow {
             MenuItem {
                 text: qsTr("О программе")
                 onTriggered: {
-                    var component = Qt.createComponent("about.qml")
+                    var component = Qt.createComponent("About.qml")
                     var win = component.createObject(window)
                     win.show()
                 }
@@ -37,11 +38,12 @@ ApplicationWindow {
 
     Loader {
         id: pageLoader
+        objectName: "loader"
         anchors{
             fill: parent
             margins: 5
         }
-        source: "mainButtons.qml"
+        source: "MainButtons.qml"
     }
 
     Connections {
