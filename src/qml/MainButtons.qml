@@ -23,6 +23,14 @@ Item {
                 handlerLoader("Clients.qml")
             }
         }
+        Button {
+            width: 150
+            height: 150
+            text: qsTr("Продажи")
+            onClicked: {
+                handlerLoader("Sales.qml")
+            }
+        }
     }
 }
 

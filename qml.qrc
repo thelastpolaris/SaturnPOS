@@ -1,26 +1,18 @@
 <RCC>
-    <qresource prefix="qml">
-        <file alias="main.qml">qml/main.qml</file>
-        <file alias="Products.qml">qml/Products.qml</file>
-        <file alias="MainButtons.qml">qml/MainButtons.qml</file>
-        <file alias="About.qml">qml/About.qml</file>
-        <file alias="Clients.qml">qml/Clients.qml</file>
-    </qresource>
-    <qresource prefix="qml/modules">
-        <file alias="ImageDialog.qml">qml/modules/ImageDialog.qml</file>
-        <file alias="DatePicker.qml">qml/modules/DatePicker.qml</file>
-    </qresource>
     <qresource prefix="/images">
-        <file>images/add_48x48.png</file>
-        <file>images/delete_48x48.png</file>
-        <file>images/save_48x48.png</file>
-        <file>images/search_48x48.png</file>
-        <file>images/settings_48x48.png</file>
-        <file>images/edit_48x48.png</file>
-        <file>images/upload_48x48.png</file>
-        <file>images/pencil_64x64.png</file>
+        <file alias="add_48x48.png">images/add_48x48.png</file>
+        <file alias="delete_48x48.png">images/delete_48x48.png</file>
+        <file alias="save_48x48.png">images/save_48x48.png</file>
+        <file alias="search_48x48.png">images/search_48x48.png</file>
+        <file alias="settings_48x48.png">images/settings_48x48.png</file>
+        <file alias="edit_48x48.png">images/edit_48x48.png</file>
+        <file alias="upload_48x48.png">images/upload_48x48.png</file>
+        <file alias="pencil_64x64.png">images/pencil_64x64.png</file>
     </qresource>
     <qresource prefix="/images/modules">
         <file alias="noimage_128x128.png">images/modules/noimage_128x128.png</file>
+    </qresource>
+    <qresource prefix="/images/components">
+        <file alias="arrow_48x48.png">images/components/arrow_48x48.png</file>
     </qresource>
 </RCC>

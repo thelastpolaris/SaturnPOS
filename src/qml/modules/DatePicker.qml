@@ -2,18 +2,23 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.0
+import QtQuick.Layouts 1.1
 
 Item {
     z: 10
-    width: dateField.width
-    height: dateField.height
+
+    width: dateField.implicitWidth
+    height: dateField.implicitHeight
 
     property Item topParent
-    FocusScope {
+
     TextField {
         id: dateField
         inputMask: "99/B9/9999"
         validator: dateRegExp
+
+        width: parent.width
+        height: parent.height
 
         RegExpValidator {
             id: dateRegExp
@@ -26,7 +31,6 @@ Item {
             focus = activeFocus
             if(focus) {
                 calendar.state = "on"
-                forceActiveFocus()
             }
             else {
                 calendar.state = "off"
@@ -241,6 +245,5 @@ Item {
             topMargin: 5
         }
         state: "off"
-    }
     }
 }

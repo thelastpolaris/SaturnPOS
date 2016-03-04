@@ -4,28 +4,27 @@ import QtQuick.Layouts 1.1
 import QtQuick.Controls.Styles 1.4
 import "modules"
 import "components"
+import "components/tablenested"
 
 Item {
-    id: sales
+    id: products
     anchors.fill: parent
-
-    SystemPalette {id: sysPalette; colorGroup: SystemPalette.Active }
 
     property int comboBoxSize: 102
 
     ListModel {
         id: libraryModel
         ListElement {
-            title: "A Masterpiece"
-            author: "Gabriel"
+            title: "Outst andin g"
+            author: "Gabriel s"
         }
         ListElement {
-            title: "Brilliance"
+            title: "A Bri lliance"
             author: "Jens"
         }
         ListElement {
-            title: "Outstanding"
-            author: "Frederik"
+            title: "Masterpiece"
+            author: "Frederikk"
         }
     }
 
@@ -33,50 +32,55 @@ Item {
         anchors.fill: parent
 
         Item {
-            id: salesLeft
+            id: productsLeft
             width: parent.width * vertResizer.portion
             height: parent.height
 
-            Button {
+            Flow {
                 id: searchButton
-                text: qsTr("Поиск")
-                checkable: true
                 anchors {
                     left: parent.left
-                    top: parent.top
-                }
-                onClicked: if (checked) {
-                               searchRow.visible = true;
-                               salesColumn.anchors.top = searchRow.bottom
-                           }
-                           else {
-                               searchRow.visible = false;
-                               salesColumn.anchors.top = searchButton.bottom
-                           }
-                //checked ? searchRow.height = 0 : searchRow.visible = false;
-            }
-
-            RowLayout {
-                anchors {
                     right: parent.right
-                    margins: 10
-                }
-                Button {
-                    id: addProductButton
-                    // Layout.preferredHeight: 32
-                    //Layout.preferredWidth: 32
-
-                    iconSource: "qrc:/images/add_48x48.png"
-                    text: qsTr("Добавить товар")
                 }
 
                 Button {
-                    id: addSubProductButton
-                    //Layout.preferredHeight: 32
-                    //Layout.preferredWidth: 32
 
-                    iconSource: "qrc:/images/add_48x48.png"
-                    text: qsTr("Добавить подпродукт")
+                    text: qsTr("Поиск")
+                    checkable: true
+
+                    onClicked: if (checked) {
+                                   searchRow.visible = true;
+                                   productsTable.anchors.top = searchRow.bottom
+                               }
+                               else {
+                                   searchRow.visible = false;
+                                   productsTable.anchors.top = searchButton.bottom
+                               }
+                    //checked ? searchRow.height = 0 : searchRow.visible = false;
+                }
+
+                RowLayout {
+                    anchors {
+                        //right: parent.right
+                        margins: 10
+                    }
+                    Button {
+                        id: addProductButton
+                        // Layout.preferredHeight: 32
+                        //Layout.preferredWidth: 32
+
+                        iconSource: "qrc:/images/add_48x48.png"
+                        text: qsTr("Добавить товар")
+                    }
+
+                    Button {
+                        id: addSubProductButton
+                        //Layout.preferredHeight: 32
+                        //Layout.preferredWidth: 32
+
+                        iconSource: "qrc:/images/add_48x48.png"
+                        text: qsTr("Добавить подпродукт")
+                    }
                 }
             }
 
@@ -141,7 +145,7 @@ Item {
 
                         Field {
                             title: qsTr("Дата поступл.")
-                            DatePicker { topParent: sales }
+                            DatePicker { topParent: products }
                         }
                     }
                 }
@@ -217,97 +221,32 @@ Item {
 
                             Field {
                                 title: qsTr("Дата поступл.")
-                                DatePicker { topParent: sales }
+                                DatePicker { topParent: products }
                             }
                         }
                     }
                 }
             }
 
-            Item {
-                id: salesColumn
+            TableNested{
+                id: productsTable
                 anchors {
                     left: parent.left
                     top: searchButton.bottom
                     topMargin: 5
                     right: parent.right
                     bottom: parent.bottom
-                    bottomMargin: 10
+                    bottomMargin: 5
                 }
 
-                Column {
-                    anchors.fill: parent
+                tableModel: libraryModel
 
-                    ColumnLayout {
-                        width: parent.width
-                        height: parent.height * horResizer.portion
+                TableNestedColumn {
+                    modelRole: "title"
+                }
 
-                        Text {
-                            text: qsTr("Товары")
-                            color: sysPalette.windowText
-                            renderType: Text.NativeRendering
-                        }
-
-                        TableView {
-                            id: salesTable
-                            model: libraryModel
-                            Layout.fillHeight: true
-                            Layout.fillWidth: true
-                            anchors {
-                                left: parent.left
-                                right: parent.right
-                            }
-
-                            TableViewColumn {
-                                role: "title"
-                                title: "Title"
-                                width: 100
-                            }
-                            TableViewColumn {
-                                role: "author"
-                                title: "Author"
-                                width: 200
-                            }
-                        }
-                    }
-
-                    HorizontalResizer {
-                        id:horResizer
-                        portion: 0.6
-                    }
-
-                    ColumnLayout {
-                        width: parent.width
-                        height: parent.height * (1 - horResizer.portion)
-
-                        Text {
-                            text: qsTr("Корзина клиента")
-                            color: sysPalette.windowText
-                            renderType: Text.NativeRendering
-                        }
-
-                        TableView {
-                            id: salesHistoryTable
-                            model: libraryModel
-                            Layout.fillHeight: true
-                            Layout.fillWidth: true
-                            anchors {
-                                left: parent.left
-                                right: parent.right
-                            }
-
-                            TableViewColumn {
-                                role: "title"
-                                title: "Title"
-                                width: 100
-                            }
-                            TableViewColumn {
-                                role: "author"
-                                title: "Author"
-                                width: 200
-                            }
-                        }
-                    }
+                TableNestedColumn {
+                    modelRole: "author"
                 }
             }
         }
@@ -319,111 +258,88 @@ Item {
         }
 
         ColumnLayout {
-            id: salesRight
+            id: addProductColumn
             width: parent.width * (1 - vertResizer.portion) - vertResizer.width
             height: parent.height
 
             GroupBox {
                 id: addAboutGroupBox
-                title: qsTr("Добавить/выбрать клиента")
-                implicitWidth: parent.width
-
-                ColumnLayout {
-                    visible: false
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                    }
-
-                    Button {
-                        Layout.fillWidth: true
-                        text: qsTr("Найти клиента")
-                    }
-
-                    Button {
-                        Layout.fillWidth: true
-                        text: qsTr("Добавить клиента")
-                    }
-                }
-
-                RowLayout {
-                    width: parent.width
-
-                    ColumnLayout {
-                        id: clientInfo
-                        Layout.fillHeight: true
-
-                        Text {
-                            color: sysPalette.windowText
-                            text: "Макс Крупп"
-                        }
-
-                        Flow {
-                            spacing: 5
-                            Layout.fillWidth: true
-                            Text {
-                                width: parent.width
-                                wrapMode:Text.WordWrap
-                                color: sysPalette.windowText
-                                text: "Клубная карта: 5435 бонусов"
-                            }
-
-                            Text {
-                                color: sysPalette.windowText
-                                text: "Скидка: 5%"
-                            }
-                        }
-
-                        Button {
-                            text: "Подробнее"
-                        }
-                    }
-                    ImageDialog {
-                        id: clientImage
-                        Layout.preferredHeight: 105
-                        Layout.preferredWidth: 105
-                        //imageSrc: "file:/home/polaris/dev/Salko/sales/Photoshoped/chornyi_pidzhak_s_bantom_i_uzorom_pered.png"
-                    }
-                }
-            }
-
-            Flow {
+                title: qsTr("Добавить/Изменить товар")
                 anchors {
                     left: parent.left
                     right: parent.right
                 }
 
-                spacing: 10
+                RowLayout {
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                    }
 
-                GroupBox {
-                    id: addMainAttrGroupBox
-                    title: qsTr("В долг")
-                    width: 240 // width of AddAbout GroupBox
+                    ColumnLayout {
 
-                    RowLayout {
-                        anchors.fill: parent
-                        spacing: 10
+                        Layout.fillWidth: true
 
                         Field {
-                            title: qsTr("Сумма ")
-                            SpinBox { }
+                            title: qsTr("Наименование")
+                            TextField {
+                                Layout.fillWidth: true
+                                id: nameAddText
+                            }
                         }
 
                         Field {
-                            title: qsTr("Дата возврата")
-                            DatePicker { topParent: sales;width: 130 }
+                            title: qsTr("Категория")
+                            ComboBox {
+                                Layout.fillWidth: true
+                                id: categoryAddComboBox
+                            }
                         }
                     }
+
+                    ImageDialog {
+                        Layout.preferredHeight: parent.height
+                        Layout.preferredWidth: parent.height
+
+                        imageSrc: "file:/home/polaris/dev/Salko/Products/Photoshoped/chornyi_pidzhak_s_bantom_i_uzorom_pered.png"
+                    }
                 }
-                Field {
-                    title:  qsTr("Скидка ")
-                    SpinBox { }
+            }
+
+            GroupBox {
+                id: addMainAttrGroupBox
+                title: qsTr("Параметры")
+                anchors {
+                    left: parent.left
+                    right: parent.right
                 }
 
-                Field {
-                    title:  qsTr("Резерв")
-                    DatePicker {
-                        topParent: sales
+                Flow {
+                    id: addMainAttrFlow
+                    anchors.fill: parent
+                    spacing: 10
+
+                    Field {
+                        title: qsTr("Цена ")
+                        TextField { }
+                    }
+
+                    Field {
+                        title: qsTr("Тип товара")
+                        ComboBox {
+                            id: typeAddComboBox
+                            implicitWidth: comboBoxSize
+                        }
+                    }
+
+                    Field {
+                        title: qsTr("Баркод ")
+                        TextField { }
+                    }
+
+                    Field {
+                        title: qsTr("Дата поступл.")
+                        DatePicker { topParent: products }
                     }
                 }
             }
@@ -439,15 +355,15 @@ Item {
 
                 ScrollView {
                     id: addCustomScroll
-
-                    anchors.fill: parent
-                    anchors.rightMargin: -8
+                    anchors{
+                        fill: parent
+                        rightMargin: -8
+                    }
                     horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
 
                     Flow {
                         id: addCustomFlow
                         width: addCustom.width
-                        height: children.height
                         spacing: 5
 
                         Field {
@@ -492,7 +408,7 @@ Item {
 
                         Field {
                             title: qsTr("Дата поступл.")
-                            DatePicker { topParent: sales }
+                            DatePicker { topParent: products }
                         }
                     }
                 }
@@ -503,13 +419,14 @@ Item {
                 id: addNoteColumn
 
                 anchors {
-                    right: parent.right
                     left: parent.left
+                    right: parent.right
                 }
 
                 TextArea {
                     id: addNoteTextArea
                     Layout.fillHeight: true
+                    Layout.fillWidth: true
                     anchors {
                         right: parent.right
                         left: parent.left

@@ -3,8 +3,6 @@ import QtQuick.Dialogs 1.2
 import QtGraphicalEffects 1.0
 
 Item {
-    property int imageWidth: 100
-    property int imageHeight: 100
     property string imageSrc
 
     property bool imageLoaded: false
@@ -18,8 +16,7 @@ Item {
 
     Image {
         fillMode: Image.PreserveAspectFit
-        width: imageWidth
-        height: imageHeight
+        anchors.fill: parent
         source: imageSrc
         id: mainImage
 
@@ -68,7 +65,7 @@ Item {
 
                 PropertyChanges {
                     target: iconImage
-                    source: "/images/images/pencil_64x64.png"
+                    source: "qrc:/images/pencil_64x64.png"
                 }
             },
             State {
@@ -76,7 +73,7 @@ Item {
 
                 PropertyChanges {
                     target: iconImage
-                    source: "/images/images/upload_48x48.png"
+                    source: "qrc:/images/upload_48x48.png"
                 }
             }
         ]
