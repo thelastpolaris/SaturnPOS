@@ -5,12 +5,40 @@ Item {
     id: tableNestedItem
 
     property QtObject parentRow: parent
+    property ListModel colModel: parent.tableModel
 
     Layout.fillWidth: true
     Layout.fillHeight: true
 
     property Component cellDelegate
     property string modelRole
+
+    SystemPalette {
+        id: sysPalette
+        colorGroup: SystemPalette.Active
+    }
+
+    function sortModel(sortRole, asc) {
+        for(var i = 0; i < colModel.count; ++i) {
+            var index_min = i;
+
+            for(var a = i; a < colModel.count; ++a) {
+                var a1 = colModel.get(a)[sortRole].toLowerCase()
+                var a2 = colModel.get(index_min)[sortRole].toLowerCase()
+                if(asc) {
+                    if(a1.localeCompare(a2) < 0) index_min = a
+                }
+                else {
+                    if(a1.localeCompare(a2) > 0) index_min = a
+                }
+            }
+
+            if(i != index_min) {
+                colModel.move(i, index_min, 1)
+                colModel.move(index_min - 1, i, 1)
+            }
+        }
+    }
 
     ColumnLayout {
         id: nestedColumn
@@ -35,6 +63,26 @@ Item {
 
             color: "grey"
 
+            MouseArea {
+                property bool asc: true
+                anchors {
+                    fill: parent
+                    leftMargin: 5
+                    rightMargin: 5
+                    //To prevent overlapping of resizer mousearea
+                }
+
+                ListModel {
+                    id:clearModel
+                }
+
+                onClicked: {
+                    sortModel(modelRole, asc)
+                    asc = !asc
+                    parentRow.updateModel()
+                }
+            }
+
             Text {
                 id: headerLabel
                 width: parent.width
@@ -45,8 +93,18 @@ Item {
             }
         }
 
+        Connections {
+            target: parentRow
+
+            onUpdateModel: {
+                colRepeater.model = clearModel
+                colRepeater.model = colModel
+            }
+        }
+
         Repeater {
-            model: libraryModel
+            id: colRepeater
+            model: colModel
 
             Rectangle {
                 Layout.fillWidth: true
@@ -67,6 +125,13 @@ Item {
                             cell.Layout.preferredHeight = newHeight
                         }
                     }
+
+                    onSelectedChanged: {
+                        state = ""
+                        if(index === elemIndex) {
+                            state = "selected"
+                        }
+                    }
                 }
 
                 Text {
@@ -74,7 +139,7 @@ Item {
                     text: model[modelRole]
 
                     onContentHeightChanged: {
-                        parentRow.cellHeightChanged(parent.height * (contentHeight/parent.height), index)
+                        parentRow.cellHeightChanged(anchors.margins + parent.height * (contentHeight/parent.height), index)
                         // Multiply parent.height by the difference between parent and cellText height
                         // to find the new value. Without it the old height will be passed
                     }
@@ -92,14 +157,29 @@ Item {
                         fill: parent
                         leftMargin: 5
                         rightMargin: 5
-
+                        //To prevent overlapping of resizer mousearea
                     }
 
                     onClicked: {
-                        console.log("sd")
+                        parentRow.selectedChanged(index)
                     }
-
                 }
+
+                states: [
+                    State {
+                        name: "selected"
+
+                        PropertyChanges {
+                            target: cell
+                            color: sysPalette.highlight
+                        }
+
+                        PropertyChanges {
+                            target: cellText
+                            color: sysPalette.highlightedText
+                        }
+                    }
+                ]
             }
         }
     }
@@ -111,6 +191,7 @@ Item {
         anchors {
             right: parent.right
             rightMargin: -5
+            //To center the resizer on the edge
         }
 
         MouseArea {
@@ -136,7 +217,7 @@ Item {
                         var foo = nestedColumn.children[i]
                         var textWidth = foo.children[0].contentWidth
                         if(textWidth >= foo.width) {
-                            minWidth.push(textWidth)
+                            minWidth.push(textWidth * 1.5)
                         }
                     }
                     var numMinWidth = Math.max.apply(Math,minWidth)

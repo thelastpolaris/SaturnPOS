@@ -14,17 +14,22 @@ Item {
 
     ListModel {
         id: libraryModel
+
         ListElement {
-            title: "Outst andin g"
+            title: "C"
             author: "Gabriel s"
+            Copy: "Gabriel dsdds s"
+
         }
         ListElement {
-            title: "A Bri lliance"
+            title: "A"
             author: "Jens"
+            Copy: "Second copy"
         }
         ListElement {
-            title: "Masterpiece"
-            author: "Frederikk"
+            title: "B"
+            author: "Arederikk"
+            Copy: "Third copy"
         }
     }
 
@@ -247,6 +252,14 @@ Item {
 
                 TableNestedColumn {
                     modelRole: "author"
+                }
+
+                TableNestedColumn {
+                    modelRole: "Copy"
+                }
+
+                TableNestedColumn {
+                    modelRole: "Copy"
                 }
             }
         }

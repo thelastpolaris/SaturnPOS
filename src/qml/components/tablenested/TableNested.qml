@@ -9,6 +9,8 @@ RowLayout {
     spacing: 0
 
     signal cellHeightChanged(var newHeight, var elemIndex)
+    signal selectedChanged(var elemIndex)
+    signal updateModel()
 
     //property Component headerDelegate:
 }
