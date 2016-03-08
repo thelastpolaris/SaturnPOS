@@ -36,4 +36,5 @@ DISTFILES += \
     src/qml/components/VerticalResizer.qml \
     src/qml/components/HorizontalResizer.qml \
     src/qml/components/tablenested/TableNested.qml \
-    src/qml/components/tablenested/TableNestedColumn.qml
+    src/qml/components/tablenested/TableNestedColumn.qml \
+    src/qml/components/tablenested/ChildTable.qml

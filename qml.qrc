@@ -15,4 +15,7 @@
     <qresource prefix="/images/components">
         <file alias="arrow_48x48.png">images/components/arrow_48x48.png</file>
     </qresource>
+    <qresource prefix="/images/components/tablenested">
+    	<file alias="arrow-nested-48x48.png">images/components/tablenested/arrow-nested-48x48.png</file>
+    </qresource>
 </RCC>

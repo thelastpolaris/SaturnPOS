@@ -232,6 +232,27 @@ Item {
                             renderType: Text.NativeRendering
                         }
 
+                        ListModel {
+                            id: libraryModel
+
+                            ListElement {
+                                title: "C"
+                                author: "Gabriel s"
+                                Copy: "Gabriel dsdds s"
+
+                            }
+                            ListElement {
+                                title: "A"
+                                author: "Jens"
+                                Copy: "Second copy"
+                            }
+                            ListElement {
+                                title: "B"
+                                author: "ArederikkArederikkArederikkArederikkArederikk"
+                                Copy: "Third copy"
+                            }
+                        }
+
                         TableView {
                             id: clientsTable
                             model: libraryModel
@@ -247,6 +268,18 @@ Item {
                                 title: "Title"
                                 width: 100
                             }
+                            TableViewColumn {
+                                role: "author"
+                                title: "Author"
+                                width: 200
+                            }
+
+                            TableViewColumn {
+                                role: "author"
+                                title: "Author"
+                                width: 200
+                            }
+
                             TableViewColumn {
                                 role: "author"
                                 title: "Author"

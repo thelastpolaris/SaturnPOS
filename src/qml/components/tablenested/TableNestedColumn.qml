@@ -5,10 +5,20 @@ Item {
     id: tableNestedItem
 
     property QtObject parentRow: parent
-    property ListModel colModel: parent.tableModel
+    property ListModel colModel: parentRow.tableModel
+    property int cellMargin: 10
+    property int nestedItemMinWidth
+    property var maxCellHeight: parentRow.maxCellHeight
 
-    Layout.fillWidth: true
-    Layout.fillHeight: true
+    Component.onCompleted: {
+        if(Positioner.isLastItem) {
+            var component = Qt.createComponent(Rectangle);
+            if (component.status == Component.Ready)
+                component.createObject(parentRow, {"width": 100, "height": 100});
+        }
+    }
+    width: 150
+    height: childrenRect.height
 
     property Component cellDelegate
     property string modelRole
@@ -40,12 +50,16 @@ Item {
         }
     }
 
+    onWidthChanged: {
+        if(nestedItemMinWidth && width < nestedItemMinWidth) {
+            width = nestedItemMinWidth
+        }
+    }
+
     ColumnLayout {
         id: nestedColumn
 
         spacing: 0
-        Layout.fillWidth: true
-        Layout.fillHeight: true
         anchors {
             top: parent.top
             left: parent.left
@@ -122,7 +136,7 @@ Item {
                     target: parentRow
                     onCellHeightChanged: {
                         if(index === elemIndex) {
-                            cell.Layout.preferredHeight = newHeight
+                           cell.Layout.preferredHeight = maxCellHeight[index]
                         }
                     }
 
@@ -132,6 +146,8 @@ Item {
                             state = "selected"
                         }
                     }
+
+
                 }
 
                 Text {
@@ -139,17 +155,36 @@ Item {
                     text: model[modelRole]
 
                     onContentHeightChanged: {
-                        parentRow.cellHeightChanged(anchors.margins + parent.height * (contentHeight/parent.height), index)
+                        var newHeight = anchors.margins + parent.height * (contentHeight/parent.height)
+                        if(newHeight > parentRow.maxCellHeight[index]) {
+                            maxCellHeight[index] = newHeight
+                        }
+                        else {
+                            maxCellHeight[index] = 0
+                            parentRow.getMaxCellHeight()
+                            parentRow.cellHeightChanged(maxCellHeight[index], index)
+                        }
+
                         // Multiply parent.height by the difference between parent and cellText height
                         // to find the new value. Without it the old height will be passed
+                    }
+
+                    Connections {
+                        target: parentRow
+                        onGetMaxCellHeight: {
+                            var ch = cellText.contentHeight
+                            if(ch > maxCellHeight[index]) maxCellHeight[index] = ch
+                            else if(!maxCellHeight[index]) maxCellHeight.push(ch)
+                            console.log(maxCellHeight[index])
+                        }
                     }
 
                     anchors {
                         left: parent.left
                         right: parent.right
-                        margins: 5
+                        margins: cellMargin
                     }
-                    wrapMode: Text.WordWrap
+                    wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                 }
 
                 MouseArea {
@@ -197,37 +232,28 @@ Item {
         MouseArea {
             id: mouseDrag
 
-            propagateComposedEvents: true
-            preventStealing: true
-
-            property int oldMouseX
-            property int numMinWidth: 0
             anchors.fill: parent
-            hoverEnabled: true
             cursorShape: Qt.SplitHCursor
+            property var oldMouse
 
             onPressed: {
-                oldMouseX = mouseX
+                oldMouse = mouseX
             }
 
             onPositionChanged: {
                 if (pressed) {
-                    var minWidth = new Array();
+                    var numMinWidth
                     for(var i = 0; i < nestedColumn.children.length - 1; ++i) {
                         var foo = nestedColumn.children[i]
                         var textWidth = foo.children[0].contentWidth
-                        if(textWidth >= foo.width) {
-                            minWidth.push(textWidth * 1.5)
+                        if(textWidth + cellMargin * 2 >= foo.width) {
+                            numMinWidth = textWidth + cellMargin * 2
+                            console.log(numMinWidth)
                         }
                     }
-                    var numMinWidth = Math.max.apply(Math,minWidth)
-                    if(numMinWidth < 0) numMinWidth = 0
-                    if(mouseX + nestedColumn.width > nestedColumn.x + numMinWidth) {
-                        tableNestedItem.Layout.maximumWidth = nestedColumn.width + (mouseX - oldMouseX)
-                    }
-
-                    // Set similar height for the whole row
-
+                    if(nestedColumn.width + mouseX < numMinWidth) return
+                    tableNestedItem.width = nestedColumn.width + (mouseX - oldMouse)
+                    if(numMinWidth) nestedItemMinWidth = numMinWidth
                 }
             }
         }

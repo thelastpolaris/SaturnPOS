@@ -16,20 +16,44 @@ Item {
         id: libraryModel
 
         ListElement {
-            title: "C"
-            author: "Gabriel s"
-            Copy: "Gabriel dsdds s"
+            images: "file:/home/polaris/dev/Salko/Products/Photoshoped/chornyi_pidzhak_s_bantom_i_uzorom_pered.png"
+            author: "hak_s_bantom_i_uzorom_pered.png"
+            Copy: "C"
+            subproduct: [
+                ListElement { images: "file:/home/polaris/dev/Salko/Products/Photoshoped/chornyi_pidzhak_s_bantom_i_uzorom_pered.png"
+                    author: "A"
+                    Copy: "C"},
+                ListElement { images: "file:/home/polaris/dev/Salko/Products/Photoshoped/chornyi_pidzhak_s_bantom_i_uzorom_pered.png"
+                    author: "A"
+                    Copy: "C"}
+            ]
 
         }
         ListElement {
-            title: "A"
-            author: "Jens"
-            Copy: "Second copy"
+            images: "file:/home/polaris/dev/Salko/Products/Photoshoped/chornyi_pidzhak_s_bantom_i_uzorom_pered.png"
+            author: "B"
+            Copy: "B"
+            subproduct: [
+                ListElement { images: "file:/home/polaris/dev/Salko/Products/Photoshoped/chornyi_pidzhak_s_bantom_i_uzorom_pered.png"
+                    author: "A"
+                    Copy: "C" },
+                ListElement { images: "file:/home/polaris/dev/Salko/Products/Photoshoped/chornyi_pidzhak_s_bantom_i_uzorom_pered.png"
+                    author: "A"
+                    Copy: "C"}
+            ]
         }
         ListElement {
-            title: "B"
-            author: "Arederikk"
-            Copy: "Third copy"
+            images: "file:/home/polaris/dev/Salko/Products/Photoshoped/chornyi_pidzhak_s_bantom_i_uzorom_pered.png"
+            author: "C"
+            Copy: "A"
+            subproduct: [
+                ListElement { images: "file:/home/polaris/dev/Salko/Products/Photoshoped/chornyi_pidzhak_s_bantom_i_uzorom_pered.png"
+                    author: "A"
+                    Copy: "C"},
+                ListElement { images: "file:/home/polaris/dev/Salko/Products/Photoshoped/chornyi_pidzhak_s_bantom_i_uzorom_pered.png"
+                    author: "A"
+                    Copy: "C"}
+            ]
         }
     }
 
@@ -55,11 +79,11 @@ Item {
 
                     onClicked: if (checked) {
                                    searchRow.visible = true;
-                                   productsTable.anchors.top = searchRow.bottom
+                                   productsTableWrapper.anchors.top = searchRow.bottom
                                }
                                else {
                                    searchRow.visible = false;
-                                   productsTable.anchors.top = searchButton.bottom
+                                   productsTableWrapper.anchors.top = searchButton.bottom
                                }
                     //checked ? searchRow.height = 0 : searchRow.visible = false;
                 }
@@ -233,8 +257,8 @@ Item {
                 }
             }
 
-            TableNested{
-                id: productsTable
+            Item {
+                id: productsTableWrapper
                 anchors {
                     left: parent.left
                     top: searchButton.bottom
@@ -243,23 +267,22 @@ Item {
                     bottom: parent.bottom
                     bottomMargin: 5
                 }
-
-                tableModel: libraryModel
-
-                TableNestedColumn {
-                    modelRole: "title"
+                onWidthChanged: {
+                    console.log(width)
                 }
 
-                TableNestedColumn {
-                    modelRole: "author"
-                }
+                ScrollView {
+                    anchors.fill: parent
+                    //verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
 
-                TableNestedColumn {
-                    modelRole: "Copy"
-                }
+                    TableNested {
+                        id: productsTable
+                        width: childrenRect.width
+                        height: childrenRect.height
 
-                TableNestedColumn {
-                    modelRole: "Copy"
+                        tableModel: libraryModel
+                        roles: [ { "r":"author"}, {"r":"Copy"}]
+                    }
                 }
             }
         }
@@ -377,6 +400,7 @@ Item {
                     Flow {
                         id: addCustomFlow
                         width: addCustom.width
+
                         spacing: 5
 
                         Field {
