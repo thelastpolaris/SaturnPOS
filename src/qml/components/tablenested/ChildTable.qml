@@ -10,7 +10,7 @@ Item {
     property var childRoles
 
     //Internal properties
-    width: elemView.width
+    //width: elemView.width
 
     //Signals
     signal colWidthChanged(int elemIndex, int newWidth)
@@ -20,10 +20,74 @@ Item {
         colorGroup: SystemPalette.Active
     }
 
+    states: [
+        State {
+            name: "on"
+            PropertyChanges {
+                target: elemView
+            }
+            PropertyChanges {
+                target: nestRootItem
+                height: childrenRect.height
+                width: childrenRect.width
+            }
+        },
+        State {
+            name: ""
+            PropertyChanges {
+                target: elemView
+            }
+            PropertyChanges {
+                target: nestRootItem
+                height: 0
+                width: 0
+            }
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: "on"
+            to: ""
+
+            SequentialAnimation{
+                NumberAnimation {
+                    target: nestRootItem
+                    property: "height"
+                    duration: 500
+                    easing.type: Easing.InOutQuad
+                }
+                /*NumberAnimation {
+                    target: elemView
+                    property: "visible"
+                    duration: 0
+                }*/
+            }
+        },
+        Transition {
+            from: ""
+            to: "on"
+            SequentialAnimation{
+                /*NumberAnimation {
+                    target: elemView
+                    property: "visible"
+                    duration: 0
+                }*/
+                NumberAnimation {
+                    target: nestRootItem
+                    property: "height"
+                    duration: 500
+                    easing.type: Easing.InOutQuad
+                }
+            }
+        }
+    ]
+
     ListView {
         id: elemView
         model: tableModel
         interactive: false
+        visible: false
 
         currentIndex: -1 // To disable selecting 0 row by default
 
@@ -126,8 +190,6 @@ Item {
                     else state = ""
                 }
             }
-
-
 
             Repeater {
                 model: roles

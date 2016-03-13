@@ -5,10 +5,14 @@ import QtQuick.Controls.Styles 1.4
 import "modules"
 import "components"
 import "components/tablenested"
+import com.saturnpos 1.0
 
 Item {
     id: products
     anchors.fill: parent
+
+    Component.onCompleted: {
+    }
 
     property int comboBoxSize: 102
 
@@ -267,9 +271,6 @@ Item {
                     bottom: parent.bottom
                     bottomMargin: 5
                 }
-                onWidthChanged: {
-                    console.log(width)
-                }
 
                 ScrollView {
                     anchors.fill: parent
@@ -280,8 +281,11 @@ Item {
                         width: childrenRect.width
                         height: childrenRect.height
 
-                        tableModel: libraryModel
-                        roles: [ { "r":"author"}, {"r":"Copy"}]
+                        tableModel: SaturnPOS.productsModel
+                        //roles: [ { "r":"author"}, {"r":"Copy"}]
+                        roles: [ {"r":"photo"}, {"r":"name"}, {"r":"price"},
+                        {"r":"categories"},  {"r":"arrival"},
+                        {"r":"discount"}, {"r":"amount"},]
                     }
                 }
             }

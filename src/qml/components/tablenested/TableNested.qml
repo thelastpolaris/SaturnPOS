@@ -1,17 +1,18 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.1
+import com.saturnpos 1.0
 
 Item {
     id: nestRootItem
-    property ListModel tableModel
+    property var tableModel
     property Component delegate
     property int minColWidth: 150
     property var roles
     property bool nested: false
 
     //Internal properties
-    width: elemView.width
+    width: childrenRect.width
 
     //Signals
     signal colWidthChanged(int elemIndex, int newWidth)
@@ -171,6 +172,17 @@ Item {
                                 left: parent.left
                                 verticalCenter: parent.verticalCenter
                             }
+                            states: State {
+                                name: "rotated"
+                                PropertyChanges {
+                                    target: nestedArrow
+                                    rotation: 90
+                                }
+                            }
+
+                            transitions: Transition {
+                                RotationAnimation { duration: 1000 }
+                            }
 
                             MouseArea {
                                 id: openNestTable
@@ -178,6 +190,8 @@ Item {
 
                                 onClicked: {
                                     subTable.makeVisible()
+                                    if(!parent.state) parent.state = "rotated"
+                                    else parent.state = ""
                                 }
                             }
 
@@ -190,8 +204,8 @@ Item {
                                     source: "qrc:/images/components/tablenested/arrow-nested-48x48.png"
 
                                 }',
-                                this,
-                                '')
+                                                                 this,
+                                                                 '')
                                 }
                             }
                         }
@@ -220,10 +234,9 @@ Item {
                                     anchors.margins = anchMargins
                                 }
 
-                                if(modelData.r === "images") {
+                                if(modelData.r === "images" || modelData.r === "photo") {
                                     var obj = Qt.createQmlObject('import QtQuick 2.0;
                                     Image {
-                                        source: "file:/home/polaris/dev/Salko/Products/Photoshoped/chornyi_pidzhak_s_bantom_i_uzorom_pered.png"
                                         anchors.verticalCenter: parent.verticalCenter
                                         fillMode: Image.PreserveAspectFit
                                     }',
@@ -231,6 +244,7 @@ Item {
                                                                  '')
                                     obj.width = Qt.binding(function() { return parent.width - anchMargins * 2 -nestedArrow.width } )
                                     obj.height = Qt.binding(function() { return parent.width - anchMargins * 2 - nestedArrow.width } )
+                                    obj.source = "file:" + SaturnPOS.getStandardPath() + "/productImages/" + tableModel.getValue(parentIndex,modelData.r)
                                     cellContent.implicitHeight = Qt.binding(function() { return obj.height + anchMargins * 2 } )
                                     cellText.destroy()
                                 } else {
@@ -245,7 +259,7 @@ Item {
                                 Layout.fillHeight: true
                                 color: cellTextColor
                                 wrapMode: Text.WrapAnywhere
-                                text: tableModel.get(parentIndex)[modelData.r]
+                                text: tableModel.getValue(parentIndex,modelData.r)
                             }
                         }
 
@@ -300,15 +314,15 @@ Item {
                 tableModel: subproduct
                 childRoles: roles
                 height: 0
-                visible: false
-                width: parent.width
+                width: 0//childrenRect.width
 
                 onMakeVisible: {
-                  height = (height == 0) ? childrenRect.height : 0
-                    subTable.visible = !subTable.visible
-
+                    state = (!state) ? "on" : ""
                 }
             }
         }
+    }
+    Component.onCompleted: {
+        //tableModel.data(QModelIndex(0,0))["id"]
     }
 }

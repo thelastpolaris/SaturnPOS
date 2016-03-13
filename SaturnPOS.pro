@@ -1,10 +1,12 @@
 TEMPLATE = app
 
-QT += qml quick widgets
+QT += qml quick widgets sql
 
 CONFIG += c++11
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    saturnpos.cpp \
+    qquickqsqlrelationaltablemodel.cpp
 
 RESOURCES += qml.qrc
 
@@ -21,7 +23,9 @@ QML_IMPORT_PATH =
 # Default rules for deployment.
 include(deployment.pri)
 
-HEADERS +=
+HEADERS += \
+    saturnpos.h \
+    qquickqsqlrelationaltablemodel.h
 
 DISTFILES += \
     src/qml/main.qml \
