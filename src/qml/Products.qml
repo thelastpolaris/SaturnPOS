@@ -126,7 +126,7 @@ Item {
                     right: parent.right
                     rightMargin: 5
                 }
-                height: searchMain.height
+                //height: searchMain.height
 
                 GroupBox {
                     id: searchMain
@@ -274,7 +274,6 @@ Item {
 
                 ScrollView {
                     anchors.fill: parent
-                    //verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
 
                     TableNested {
                         id: productsTable
@@ -282,10 +281,10 @@ Item {
                         height: childrenRect.height
 
                         tableModel: SaturnPOS.productsModel
-                        //roles: [ { "r":"author"}, {"r":"Copy"}]
+                        /*//roles: [ { "r":"author"}, {"r":"Copy"}]
                         roles: [ {"r":"photo"}, {"r":"name"}, {"r":"price"},
                         {"r":"categories"},  {"r":"arrival"},
-                        {"r":"discount"}, {"r":"amount"},]
+                        {"r":"discount"}, {"r":"amount"},]*/
                     }
                 }
             }

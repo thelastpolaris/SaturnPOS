@@ -12,6 +12,8 @@ class QQuickQSqlRelationalTableModel : public QSqlRelationalTableModel
 public:
     explicit QQuickQSqlRelationalTableModel(QObject *parent = 0, QSqlDatabase db = QSqlDatabase());
     Q_INVOKABLE QString getValue(qint32 row, QString role) const;
+    bool select();
+    
 
 signals:
 
