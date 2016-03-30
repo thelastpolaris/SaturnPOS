@@ -12,6 +12,7 @@ Item {
     anchors.fill: parent
 
     Component.onCompleted: {
+
     }
 
     property int comboBoxSize: 102
@@ -281,10 +282,9 @@ Item {
                         height: childrenRect.height
 
                         tableModel: SaturnPOS.productsModel
-                        /*//roles: [ { "r":"author"}, {"r":"Copy"}]
                         roles: [ {"r":"photo"}, {"r":"name"}, {"r":"price"},
                         {"r":"categories"},  {"r":"arrival"},
-                        {"r":"discount"}, {"r":"amount"},]*/
+                        {"r":"discount"}, {"r":"amount"},]
                     }
                 }
             }

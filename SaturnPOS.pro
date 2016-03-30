@@ -6,7 +6,7 @@ CONFIG += c++11
 
 SOURCES += main.cpp \
     saturnpos.cpp \
-    qquickqsqlrelationaltablemodel.cpp
+    qquicksqlrelationaltablemodel.cpp
 
 RESOURCES += qml.qrc
 
@@ -25,7 +25,7 @@ include(deployment.pri)
 
 HEADERS += \
     saturnpos.h \
-    qquickqsqlrelationaltablemodel.h
+    qquicksqlrelationaltablemodel.h
 
 DISTFILES += \
     src/qml/main.qml \

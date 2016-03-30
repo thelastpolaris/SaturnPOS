@@ -244,7 +244,7 @@ Item {
                                                                  '')
                                     obj.width = Qt.binding(function() { return parent.width - anchMargins * 2 -nestedArrow.width } )
                                     obj.height = Qt.binding(function() { return parent.width - anchMargins * 2 - nestedArrow.width } )
-                                    obj.source = "file:" + SaturnPOS.getStandardPath() + "/productImages/" + tableModel.getValue(parentIndex,modelData.r)
+                                    obj.source = "file:" + SaturnPOS.getStandardPath() + "/productImages/" + modelData
                                     cellContent.implicitHeight = Qt.binding(function() { return obj.height + anchMargins * 2 } )
                                     cellText.destroy()
                                 } else {
@@ -259,7 +259,7 @@ Item {
                                 Layout.fillHeight: true
                                 color: cellTextColor
                                 wrapMode: Text.WrapAnywhere
-                                text: tableModel.getValue(parentIndex,modelData.r)
+                                text: modelData.toString()
                             }
                         }
 

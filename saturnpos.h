@@ -10,7 +10,7 @@
 #include <QtSql>
 #include <QtQml>
 
-#include "qquickqsqlrelationaltablemodel.h"
+#include "qquicksqlrelationaltablemodel.h"
 
 class SaturnPOS : public QObject
 {
@@ -21,7 +21,7 @@ public:
 
     Q_INVOKABLE QString getStandardPath() const { return standardPath; }
 
-    Q_PROPERTY (QQuickQSqlRelationalTableModel* productsModel MEMBER productsModel NOTIFY productsModelChanged)
+    Q_PROPERTY (QQuickSqlRelationalTableModel* productsModel MEMBER productsModel NOTIFY productsModelChanged)
 
 signals:
     void productsModelChanged();
@@ -33,7 +33,7 @@ private:
     static SaturnPOS* pinstance;
     QSqlDatabase db;
     QString standardPath;
-    QQuickQSqlRelationalTableModel* productsModel;
+    QQuickSqlRelationalTableModel* productsModel;
 
 };
 

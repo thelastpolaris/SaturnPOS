@@ -19,7 +19,7 @@ SaturnPOS::SaturnPOS(QObject *parent) : QObject(parent)
     db.setPassword("redwood32");
     db.open();
 
-    productsModel = new QQuickQSqlRelationalTableModel();
+    productsModel = new QQuickSqlRelationalTableModel();
 
     productsModel->setTable("products");
 
