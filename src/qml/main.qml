@@ -1,13 +1,14 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
 import "modules"
+import "plugins"
 
 ApplicationWindow {
     id: window
     visible: true
     minimumWidth: 800
     minimumHeight: 600
-    title: qsTr("Hello World")
+    title: qsTr("SaturnPOS")
 
     menuBar: MenuBar {
         Menu {

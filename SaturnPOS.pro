@@ -5,8 +5,12 @@ QT += qml quick widgets sql
 CONFIG += c++11
 
 SOURCES += main.cpp \
-    saturnpos.cpp \
-    qquicksqlrelationaltablemodel.cpp
+    src/backend/saturnpos.cpp \
+    src/backend/tablenested.cpp \
+    src/backend/modules/qquicksqlrelationaltablemodel.cpp \
+    src/backend/tablesubproducts.cpp \
+    src/backend/spproducts.cpp \
+    src/backend/modules/twodimensionalmodel.cpp
 
 RESOURCES += qml.qrc
 
@@ -24,8 +28,12 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 HEADERS += \
-    saturnpos.h \
-    qquicksqlrelationaltablemodel.h
+    src/backend/saturnpos.h \
+    src/backend/modules/qquicksqlrelationaltablemodel.h \
+    src/backend/tablenested.h \
+    src/backend/tablesubproducts.h \
+    src/backend/spproducts.h \
+    src/backend/modules/twodimensionalmodel.h
 
 DISTFILES += \
     src/qml/main.qml \
@@ -34,11 +42,14 @@ DISTFILES += \
     src/qml/Clients.qml \
     src/qml/About.qml \
     src/qml/MainButtons.qml \
-    src/qml/modules/DatePicker.qml \
-    src/qml/modules/ImageDialog.qml \
-    src/qml/components/Field.qml \
-    src/qml/components/VerticalResizer.qml \
-    src/qml/components/HorizontalResizer.qml \
-    src/qml/components/tablenested/TableNested.qml \
-    src/qml/components/tablenested/TableNestedColumn.qml \
-    src/qml/components/tablenested/ChildTable.qml
+    #Modules
+    src/qml/modules/Field.qml \
+    src/qml/modules/VerticalResizer.qml \
+    src/qml/modules/HorizontalResizer.qml \
+    src/qml/modules/SearchDropDown.qml \
+    #Plugins
+    src/qml/plugins/DatePicker.qml \
+    src/qml/plugins/ImageDialog.qml \
+    src/qml/plugins/tablenested/TableNested.qml \
+    src/qml/plugins/tablenested/TableNestedColumn.qml \
+    src/qml/plugins/tablenested/ChildTable.qml

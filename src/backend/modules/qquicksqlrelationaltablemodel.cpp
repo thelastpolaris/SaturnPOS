@@ -9,10 +9,12 @@ QQuickSqlRelationalTableModel::QQuickSqlRelationalTableModel(QObject *parent, QS
 bool QQuickSqlRelationalTableModel::select() {
     bool ret = QSqlRelationalTableModel::select();
 
-    if(ret) {
+    if(ret || success) {
         generateRoleNames();
     }
-
+    /*for(int i = 0; i < role_names.count(); ++i) {
+        qDebug() << role_names[i];
+    }*/
     return ret;
 }
 

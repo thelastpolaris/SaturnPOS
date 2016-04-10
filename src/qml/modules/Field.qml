@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.1
 
 ColumnLayout {
     property string title
+    property bool changed: false
 
     Label {
         id: fieldLabel

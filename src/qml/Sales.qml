@@ -3,7 +3,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.1
 import QtQuick.Controls.Styles 1.4
 import "modules"
-import "components"
+import "plugins"
 
 Item {
     id: sales

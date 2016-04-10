@@ -3,7 +3,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.1
 import QtQuick.Controls.Styles 1.4
 import "modules"
-import "components"
+import "plugins"
 
 Item {
     id: clients
@@ -227,7 +227,7 @@ Item {
                         height: parent.height * horResizer.portion
 
                         Text {
-                            text: qsTr("Товары")
+                            text: qsTr("Клиенты")
                             color: sysPalette.windowText
                             renderType: Text.NativeRendering
                         }
@@ -299,7 +299,7 @@ Item {
 
 
                         Text {
-                            text: qsTr("Корзина клиента")
+                            text: qsTr("История покупок")
                             color: sysPalette.windowText
                             renderType: Text.NativeRendering
                         }
@@ -341,6 +341,13 @@ Item {
             height: parent.height
             width: parent.width * (1 - vertResizer.portion) - vertResizer.width
 
+            property var changedFields: []
+            property QtObject currentRow: clientsTable.currentRow < 0 ? null : clientsTable.model.get(clientsTable.currentRow)
+
+            onCurrentRowChanged: {
+                console.log(clientName.changed)
+            }
+
             ScrollView {
                 anchors{
                     fill: parent
@@ -376,6 +383,7 @@ Item {
 
                                 Field {
                                     title: qsTr("Имя")
+                                    id: clientName
 
                                     anchors {
                                         left: parent.left
@@ -384,7 +392,14 @@ Item {
 
                                     TextField {
                                         Layout.fillWidth: true
-                                        id: clientName
+                                        text: clientsRight.currentRow ? clientsRight.currentRow.title : ""
+
+                                        onTextChanged: {
+                                            if (text !== clientsRight.currentRow.title) {
+                                                clientName.changed = true
+                                            } else clientName.changed = false
+                                        }
+
                                         anchors {
                                             left: parent.left
                                             right: parent.right
@@ -394,6 +409,7 @@ Item {
 
                                 Field {
                                     title: qsTr("Фамилия")
+                                    id: clientSurname
 
                                     anchors {
                                         left: parent.left
@@ -402,7 +418,13 @@ Item {
 
                                     TextField {
                                         Layout.fillWidth: true
-                                        id: clientSurname
+                                        text: clientsRight.currentRow ? clientsRight.currentRow.author : ""
+
+                                        onTextChanged: {
+                                            if (text !== clientsRight.currentRow.author) {
+                                                clientSurname.changed = true
+                                            } else clientSurname.changed = false
+                                        }
                                         anchors {
                                             left: parent.left
                                             right: parent.right

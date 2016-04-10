@@ -1,33 +1,128 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.1
-import com.saturnpos 1.0
 
 Item {
-    id: nestRootItem
+    id: nestedChildTableRoot
     property var tableModel
-    property Component delegate
     property int minColWidth: 150
     property var roles
-    property bool nested: false
+    height: 0
+    Component.onCompleted: {
+        state = ""
+    }
 
-    //Internal properties
-    width: childrenRect.width
+    Connections {
+        target: nestedTableRoot
+        onGlobalColWidthChanged: {
+            colWidthChanged(elemIndex, newWidth, false)
+        }
+    }
 
     //Signals
-    signal colWidthChanged(int elemIndex, int newWidth)
+    signal colWidthChanged(int elemIndex, int newWidth, bool propagate)
 
     SystemPalette {
         id: sysPalette
         colorGroup: SystemPalette.Active
     }
 
+    states: [
+        State {
+            name: "on"
+
+            PropertyChanges {
+                target: nestedChildTableRoot
+                height: elemChildView.height
+            }
+            PropertyChanges {
+                target: elemChildView
+                opacity: 1
+            }
+        },
+        State {
+            name: ""
+            PropertyChanges {
+                target: elemChildView
+                opacity: 0
+            }
+            PropertyChanges {
+                target: nestedChildTableRoot
+                height: 0
+            }
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: "on"
+            to: ""
+
+            SequentialAnimation{
+                NumberAnimation {
+                    target: nestedChildTableRoot
+                    property: "height"
+                    duration: 100
+                    //easing.type: Easing.InOutQuad
+                }
+                NumberAnimation {
+                    target: elemChildView
+                    property: "opacity"
+                    duration: 0
+                }
+            }
+        },
+        Transition {
+            from: ""
+            to: "on"
+            SequentialAnimation{
+                NumberAnimation {
+                    target: elemChildView
+                    property: "opacity"
+                    duration: 0
+                }
+                NumberAnimation {
+                    target: nestedChildTableRoot
+                    property: "height"
+                    duration: 100
+                    //easing.type: Easing.InOutQuad
+                }
+            }
+        }
+    ]
+
+
+
     ListView {
-        id: elemView
+        id: elemChildView
         model: tableModel
         interactive: false
-
         currentIndex: -1 // To disable selecting 0 row by default
+        opacity: 0
+
+        Rectangle {
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: parent.top
+                bottom: parent.bottom
+            }
+
+            Component.onCompleted: {
+                if(elemChildView.model.rowCount()) visible = false
+            }
+
+            color: sysPalette.base
+
+            Text {
+                text: qsTr("Подпродукты не найдены")
+                color: sysPalette.buttonText
+                anchors.centerIn: parent
+                font {
+                    pointSize: 11
+                }
+            }
+        }
 
         //Workaround to bind height to contentHeight and get rid of binding loop warning
         Component.onCompleted: {
@@ -66,21 +161,25 @@ Item {
         }
 
         header: RowLayout {
+            id: tableHeader
+            property color headerColor: sysPalette.mid
+            property color headerTextColor: sysPalette.buttonText
+
             spacing: 0
             Repeater {
                 id: headerRepeater
-                model: roles
+                model: childTableRoles
 
                 Rectangle {
                     id: header
-                    color: "grey"
+                    color: headerColor
 
                     implicitWidth: minColWidth
                     implicitHeight: headerLabel.contentHeight
                     Layout.fillHeight: true
 
                     Connections {
-                        target: nestRootItem
+                        target: nestedChildTableRoot
                         onColWidthChanged: {
                             if(index == elemIndex) {
                                 implicitWidth = newWidth
@@ -97,12 +196,8 @@ Item {
                             //To prevent overlapping of resizer mousearea
                         }
 
-                        ListModel {
-                            id:clearModel
-                        }
-
                         onClicked: {
-                            elemView.sortModel(tableModel, modelData.r, asc)
+                            elemChildView.sortModel(tableModel, modelData.r, asc)
                             asc = !asc
                         }
                     }
@@ -113,28 +208,39 @@ Item {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-                        text: modelData.r
+                        text: modelData.title
+                        color: headerTextColor
                     }
                 }
             }
         }
 
-        delegate: Column {
-            id: elemItem
-            property color cellColor: "white"
-            property color cellTextColor: "black"
-            property int parentIndex: index
+        delegate: Item {
+            id: tableChildDelegate
+            property color cellColor: sysPalette.base
+            property color cellTextColor: sysPalette.buttonText
+            property color cellBorderColor: sysPalette.mid
+            property QtObject parentModel: model
+            property bool mouseAreasEnabled: (nestedChildTableRoot.state == "on") ? true : false
 
             width: childrenRect.width
             height: childrenRect.height
 
             Connections {
-                target: elemView
+                target: elemChildView
                 onCurrentIndexChanged: {
-                    if(elemView.currentIndex === index) {
+                    if(elemChildView.currentIndex === index) {
                         state = "selected"
+                        elemView.currentIndex = tableDelegate.elemIndex
                     }
                     else state = ""
+                }
+            }
+
+            Connections {
+                target: elemView
+                onCurrentIndexChanged: {
+                    if(elemView.currentIndex != tableDelegate.elemIndex) elemChildView.currentIndex = -1
                 }
             }
 
@@ -145,15 +251,19 @@ Item {
                 MouseArea {
                     id: mouseSelect
                     anchors.fill: parent
+                    enabled: mouseAreasEnabled
 
                     onClicked: {
-                        elemView.currentIndex = index
+                        elemChildView.currentIndex = index
                     }
                 }
 
                 Repeater {
-                    model: roles
+                    model: childTableRoles
+
                     Rectangle {
+                        property string modelValue: tableChildDelegate.parentModel[modelData.role]
+
                         id: cellRect
                         implicitWidth: minColWidth
                         implicitHeight: cellContent.implicitHeight + cellContent.anchors.margins*2
@@ -161,57 +271,11 @@ Item {
                         color: cellColor
                         border {
                             width: 1
-                            color: "#828790"
-                        }
-
-                        Item {
-                            id: nestedArrow
-                            width: 16
-                            height: 16
-                            anchors {
-                                left: parent.left
-                                verticalCenter: parent.verticalCenter
-                            }
-                            states: State {
-                                name: "rotated"
-                                PropertyChanges {
-                                    target: nestedArrow
-                                    rotation: 90
-                                }
-                            }
-
-                            transitions: Transition {
-                                RotationAnimation { duration: 1000 }
-                            }
-
-                            MouseArea {
-                                id: openNestTable
-                                anchors.fill: parent
-
-                                onClicked: {
-                                    subTable.makeVisible()
-                                    if(!parent.state) parent.state = "rotated"
-                                    else parent.state = ""
-                                }
-                            }
-
-                            Component.onCompleted: {
-                                if(index == 0) {
-                                    var obj = Qt.createQmlObject('import QtQuick 2.0;
-                                Image {
-                                    width: 16
-                                    height: 16
-                                    source: "qrc:/images/components/tablenested/arrow-nested-48x48.png"
-
-                                }',
-                                                                 this,
-                                                                 '')
-                                }
-                            }
+                            color: cellBorderColor//"#828790"
                         }
 
                         Connections {
-                            target: nestRootItem
+                            target: nestedChildTableRoot
                             onColWidthChanged: {
                                 if(index == elemIndex) {
                                     implicitWidth = newWidth
@@ -221,35 +285,17 @@ Item {
 
                         Item {
                             id: cellContent
-                            width: parent.width - nestedArrow.width
+                            width: parent.width// - nestedArrow.width
+                            implicitHeight: cellText.implicitHeight
                             property int anchMargins: 5
+                            anchors {
+                                fill: parent
+                                margins: anchMargins
+                            }
 
                             Component.onCompleted: {
-                                if(index == 0) {
-                                    anchors.left = nestedArrow.right
-
-                                }
-                                else {
-                                    anchors.fill = parent
-                                    anchors.margins = anchMargins
-                                }
-
-                                if(modelData.r === "images" || modelData.r === "photo") {
-                                    var obj = Qt.createQmlObject('import QtQuick 2.0;
-                                    Image {
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        fillMode: Image.PreserveAspectFit
-                                    }',
-                                                                 this,
-                                                                 '')
-                                    obj.width = Qt.binding(function() { return parent.width - anchMargins * 2 -nestedArrow.width } )
-                                    obj.height = Qt.binding(function() { return parent.width - anchMargins * 2 - nestedArrow.width } )
-                                    obj.source = "file:" + SaturnPOS.getStandardPath() + "/productImages/" + modelData
-                                    cellContent.implicitHeight = Qt.binding(function() { return obj.height + anchMargins * 2 } )
-                                    cellText.destroy()
-                                } else {
-                                    cellContent.implicitHeight = Qt.binding(function() { return cellText.implicitHeight } )
-                                }
+                                //cellContent.implicitHeight = Qt.binding(function() { return cellText.implicitHeight } )
+                                //If child table needs to display images insert code for image displaying headerRepeater
                             }
 
                             Text {
@@ -258,8 +304,8 @@ Item {
                                 width: parent.width
                                 Layout.fillHeight: true
                                 color: cellTextColor
-                                wrapMode: Text.WrapAnywhere
-                                text: modelData.toString()
+                                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                                text: modelValue
                             }
                         }
 
@@ -272,6 +318,7 @@ Item {
                                 right: parent.right
                             }
                             width: 5
+                            visible: mouseAreasEnabled
 
                             cursorShape: Qt.SplitHCursor
                             property var oldMouse
@@ -283,7 +330,7 @@ Item {
                             onPositionChanged: {
                                 if (pressed) {
                                     parent.implicitWidth = cellRect.width + (mouseX - oldMouse)
-                                    nestRootItem.colWidthChanged(index, parent.implicitWidth)
+                                    nestedChildTableRoot.colWidthChanged(index, parent.implicitWidth, true)
                                 }
                             }
                         }
@@ -296,33 +343,16 @@ Item {
                     name: "selected"
 
                     PropertyChanges {
-                        target: elemItem
+                        target: tableChildDelegate
                         cellColor: sysPalette.highlight
                     }
 
                     PropertyChanges {
-                        target: elemItem
+                        target: tableChildDelegate
                         cellTextColor: sysPalette.highlightedText
                     }
                 }
             ]
-
-            ChildTable {
-                signal makeVisible()
-
-                id: subTable
-                tableModel: subproduct
-                childRoles: roles
-                height: 0
-                width: 0//childrenRect.width
-
-                onMakeVisible: {
-                    state = (!state) ? "on" : ""
-                }
-            }
         }
-    }
-    Component.onCompleted: {
-        //tableModel.data(QModelIndex(0,0))["id"]
     }
 }

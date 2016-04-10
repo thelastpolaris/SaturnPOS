@@ -54,7 +54,7 @@ Item {
 
         Behavior on opacity {
             PropertyAnimation {
-                duration: 800
+                duration: 400
                 easing.type: Easing.InSine
             }
         }

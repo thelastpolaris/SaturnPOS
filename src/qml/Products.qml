@@ -3,8 +3,8 @@ import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.1
 import QtQuick.Controls.Styles 1.4
 import "modules"
-import "components"
-import "components/tablenested"
+import "plugins"
+import "plugins/tablenested"
 import com.saturnpos 1.0
 
 Item {
@@ -70,7 +70,7 @@ Item {
             width: parent.width * vertResizer.portion
             height: parent.height
 
-            Flow {
+            RowLayout {
                 id: searchButton
                 anchors {
                     left: parent.left
@@ -95,8 +95,8 @@ Item {
 
                 RowLayout {
                     anchors {
-                        //right: parent.right
-                        margins: 10
+                        right: parent.right
+                        //margins: 10
                     }
                     Button {
                         id: addProductButton
@@ -118,7 +118,7 @@ Item {
                 }
             }
 
-            RowLayout {
+            /*RowLayout {
                 id: searchRow
                 visible: false
                 anchors {
@@ -260,7 +260,143 @@ Item {
                         }
                     }
                 }
+            }*/
+
+            RowLayout {
+                id: searchRow
+                visible: false
+                anchors {
+                    top: searchButton.bottom
+                    left: parent.left
+                    right: parent.right
+                    rightMargin: 5
+                }
+                height: searchMain.height
+
+                GroupBox {
+                    id: searchProdAttr
+                    title: qsTr("Параметры продукта")
+                    anchors {
+                        top: parent.top
+                        left: parent.left
+                        right: parent.horizontalCenter
+                        rightMargin: 5
+                    }
+
+                    Flow {
+                        anchors.fill: parent
+                        spacing: 10
+
+                        Field {
+                            title: qsTr("Название")
+                            TextField {
+                                id: sName
+                            }
+                        }
+
+                        Field {
+                            title: qsTr("Цена")
+                            TextField {
+                                id: sPrice
+                            }
+                        }
+
+                        Field {
+                            title: qsTr("Категория")
+                            ComboBox {
+                                id: sCategory
+                                implicitWidth: comboBoxSize
+                                textRole: "value"
+                                model: SaturnPOS.products.categories
+                            }
+                        }
+
+                        Field {
+                            title: qsTr("Цвет")
+                            ComboBox {
+                                id: sColor
+                                implicitWidth: comboBoxSize
+                                textRole: "value"
+                                model: SaturnPOS.products.colors
+                            }
+                        }
+
+                        Field {
+                            title: qsTr("Скидка")
+                            TextField {
+                                id: sDiscount
+                            }
+                        }
+
+                        Field {
+                            title: qsTr("Дата поступления")
+                            DatePicker {
+                                id: sArrivalDate
+                                topParent: products
+                            }
+                        }
+                    }
+                }
+
+                GroupBox {
+                    id: searcheSubAttr
+                    title: qsTr("Параметры подпродуктов")
+                    anchors {
+                        top: parent.top
+                        left: parent.horizontalCenter
+                        right: parent.right
+                        bottom: parent.bottom
+                        leftMargin: 5
+                        rightMargin: 5
+                    }
+
+                    Flow {
+                        id: searchAttributesFlow
+                        anchors.fill: parent
+                        spacing: 10
+
+                        Field {
+                            title: qsTr("Размер")
+                            ComboBox {
+                                id: sSize
+                                implicitWidth: comboBoxSize
+                                textRole: "value"
+                                model: SaturnPOS.products.sizes
+                            }
+                        }
+
+                        Field {
+                            title: qsTr("Залог")
+                            TextField {
+                                id: sPrepayment
+                            }
+                        }
+
+                        Field {
+                            title: qsTr("Кол-во")
+                            TextField {
+                                id: sAmount
+                            }
+                        }
+
+                        Field {
+                            title: qsTr("Штрихкод")
+                            TextField {
+                                id: sBarcode
+                            }
+                        }
+                    }
+                }
             }
+
+            /*Button {
+                width: 50
+                height: 50
+                text: "TEST!"
+                onClicked: {
+                    productsTable.visible = productsTable.visible ? false : true
+                }
+            }*/
 
             Item {
                 id: productsTableWrapper
@@ -273,18 +409,38 @@ Item {
                     bottomMargin: 5
                 }
 
+
                 ScrollView {
                     anchors.fill: parent
+
 
                     TableNested {
                         id: productsTable
                         width: childrenRect.width
                         height: childrenRect.height
 
-                        tableModel: SaturnPOS.productsModel
-                        roles: [ {"r":"photo"}, {"r":"name"}, {"r":"price"},
-                        {"r":"categories"},  {"r":"arrival"},
-                        {"r":"discount"}, {"r":"amount"},]
+                        tableModel: SaturnPOS.products.productsModel
+
+                        roles: [
+                            {"role":"photo", "title":"Фото"},
+                            {"role":"name", "title":"Название"},
+                            {"role":"price", "title":"Цена"},
+                            {"role":"category_name", "title":"Категория"},
+                            {"role":"color_name", "title":"Цвет"},
+                            {"role":"arrival", "title":"Дата поступления"},
+                            {"role":"discount", "title":"Скидка"}]//,
+                        // {"role":"amount", "title":"Количество"}]
+                        childTableRoles: [
+                            {"role":"size", "title":"Размер"},
+                            {"role":"reserved", "title":"Залог"},
+                            {"role":"amount", "title":"Кол-во"},
+                            {"role":"note", "title":"Заметка"},
+                            {"role":"barcode", "title":"Штрихкод"}
+                        ]
+                        //subProductRoles
+                        /*roles: [ "photo", "name", "price",
+                              "arrival",
+                            "discount", "amount"]*/
                     }
                 }
             }
@@ -332,6 +488,8 @@ Item {
                             ComboBox {
                                 Layout.fillWidth: true
                                 id: categoryAddComboBox
+                                textRole: "value"
+                                model: SaturnPOS.products.categories
                             }
                         }
                     }
@@ -346,117 +504,125 @@ Item {
             }
 
             GroupBox {
-                id: addMainAttrGroupBox
-                title: qsTr("Параметры")
+                id: addProdAttr
+                title: qsTr("Параметры продукта")
                 anchors {
                     left: parent.left
                     right: parent.right
                 }
 
                 Flow {
-                    id: addMainAttrFlow
                     anchors.fill: parent
                     spacing: 10
 
                     Field {
-                        title: qsTr("Цена ")
-                        TextField { }
-                    }
-
-                    Field {
-                        title: qsTr("Тип товара")
-                        ComboBox {
-                            id: typeAddComboBox
-                            implicitWidth: comboBoxSize
+                        title: qsTr("Название")
+                        TextField {
+                            id: aName
                         }
                     }
 
                     Field {
-                        title: qsTr("Баркод ")
-                        TextField { }
+                        title: qsTr("Цена")
+                        TextField {
+                            id: aPrice
+                        }
                     }
 
                     Field {
-                        title: qsTr("Дата поступл.")
-                        DatePicker { topParent: products }
+                        title: qsTr("Цвет")
+                        ComboBox {
+                            id: aColor
+                            implicitWidth: comboBoxSize
+                            textRole: "value"
+                            model: SaturnPOS.products.colors
+                        }
+                    }
+
+                    Field {
+                        title: qsTr("Скидка")
+                        TextField {
+                            id: aDiscount
+                        }
+                    }
+
+                    Field {
+                        title: qsTr("Общее кол-во")
+                        TextField {
+                            id: aAllAmount
+                            readOnly: true
+                        }
+                    }
+
+                    Field {
+                        title: qsTr("Дата поступления")
+                        DatePicker {
+                            id: aArrivalDate
+                            topParent: products
+                        }
                     }
                 }
             }
 
             GroupBox {
                 id: addCustom
-                title: qsTr("Пользовательские атрибуты")
+                title: qsTr("Параметры подпродукта")
 
                 anchors {
                     left: parent.left
                     right: parent.right
                 }
 
-                ScrollView {
+                /*ScrollView {
                     id: addCustomScroll
                     anchors{
                         fill: parent
                         rightMargin: -8
                     }
-                    horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+                    horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff*/
 
-                    Flow {
-                        id: addCustomFlow
-                        width: addCustom.width
+                Flow {
+                    id: addSubAttr
+                    anchors.fill: parent
+                    spacing: 10
 
-                        spacing: 5
-
-                        Field {
-                            title: qsTr("Размер")
-                            TextField {
-                                id: addTest1
-                            }
+                    Field {
+                        title: qsTr("Размер")
+                        ComboBox {
+                            id: aSize
+                            implicitWidth: comboBoxSize
+                            textRole: "value"
+                            model: SaturnPOS.products.sizes
                         }
+                    }
 
-                        Field {
-                            title: qsTr("Размер")
-                            TextField {
-                                id: addTest11
-                            }
+                    Field {
+                        title: qsTr("Залог")
+                        TextField {
+                            id: aPrepayment
                         }
+                    }
 
-                        Field {
-                            title: qsTr("Цвет")
-                            TextField { }
+                    Field {
+                        title: qsTr("Кол-во")
+                        TextField {
+                            id: aAmount
                         }
+                    }
 
-                        Field {
-                            title: qsTr("Материал")
-                            ComboBox {
-                                id: test1AddComboBox
-                                implicitWidth: comboBoxSize
-                            }
-                        }
-
-                        Field {
-                            title: qsTr("Тип товара")
-                            ComboBox {
-                                id: test2AddComboBox
-                                implicitWidth: comboBoxSize
-                            }
-                        }
-
-                        Field {
-                            title: qsTr("Баркод")
-                            TextField { }
-                        }
-
-                        Field {
-                            title: qsTr("Дата поступл.")
-                            DatePicker { topParent: products }
+                    Field {
+                        title: qsTr("Штрихкод")
+                        TextField {
+                            id: aBarcode
                         }
                     }
                 }
+                // }
             }
 
             Field {
                 title: qsTr("Заметка")
-                id: addNoteColumn
+                id: aNote
 
                 anchors {
                     left: parent.left

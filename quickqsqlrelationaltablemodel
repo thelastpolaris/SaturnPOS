@@ -1,0 +1,17 @@
+#ifndef QSQLRELATIONALTABLEMODELQTQUICK_H
+#define QSQLRELATIONALTABLEMODELQTQUICK_H
+
+#include <QObject>
+
+class QuickQSqlRelationalTableModel : public QObject
+{
+    Q_OBJECT
+public:
+    explicit QuickQSqlRelationalTableModel(QObject *parent = 0);
+
+signals:
+
+public slots:
+};
+
+#endif // QSQLRELATIONALTABLEMODELQTQUICK_H

@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QtQml>
 #include <QJSEngine>
-#include "saturnpos.h"
+#include "src/backend/saturnpos.h"
 
 Q_DECLARE_METATYPE(QModelIndex)
 
